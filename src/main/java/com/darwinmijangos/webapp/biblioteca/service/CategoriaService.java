@@ -1,3 +1,8 @@
+package com.darwinmijangos.webapp.biblioteca.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.darwinmijangos.webapp.biblioteca.model.Categoria;
 import com.darwinmijangos.webapp.biblioteca.repository.CategoriaRepository;
@@ -5,7 +10,7 @@ import com.darwinmijangos.webapp.biblioteca.repository.CategoriaRepository;
 @Service
 public class CategoriaService implements ICategoriaService{
     @Autowired
-    private CategoriaRepository categoriaRepository;
+    private CategoriaRepository categoriaRepository;    
 
     @Override
     public List<Categoria> listarCategorias(){
@@ -23,7 +28,20 @@ public class CategoriaService implements ICategoriaService{
     }
 
     @Override
-    public void eliminarCategoria(Long id){
-        categoriaRepository.deleteById(id);
+    public void eliminarCategoria(Categoria categoria){
+        categoriaRepository.delete(categoria);
     }
+
+    @Override
+    public Boolean verificarCategoriaDuplicada(Categoria categoriaNueva){
+        List<Categoria> categorias = listarCategorias();
+        Boolean flag = false;
+        for (Categoria categoria : categorias) {
+            if(categoriaNueva.getNombreCategoria().trim().equalsIgnoreCase(categoria.getNombreCategoria()) && !categoriaNueva.getId().equals(categoria.getId())){
+                return true;
+            }
+        }
+        return flag;
+    }
+
 }
